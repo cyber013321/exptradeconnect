@@ -114,6 +114,11 @@ export function AdminPage() {
     toggleUserLock(userId);
   };
 
+  const handleSetTradeMode = (userId: string, mode: 'NORMAL' | 'PROFIT' | 'LOSS') => {
+    setUserTradeMode(userId, mode);
+    alert(`✅ Trade mode set to ${mode}`);
+  };
+
   // Dashboard Tab
   const DashboardTab = () => (
     <div className="space-y-6">
@@ -195,6 +200,7 @@ export function AdminPage() {
                 <th className="text-left py-3 px-4 text-[#8b949e] font-medium">Name</th>
                 <th className="text-left py-3 px-4 text-[#8b949e] font-medium">Balance</th>
                 <th className="text-left py-3 px-4 text-[#8b949e] font-medium">Status</th>
+                <th className="text-left py-3 px-4 text-[#8b949e] font-medium">Trade Mode</th>
                 <th className="text-left py-3 px-4 text-[#8b949e] font-medium">Actions</th>
               </tr>
             </thead>
@@ -209,6 +215,15 @@ export function AdminPage() {
                       <span className="px-2 py-1 bg-[#26a69a]/20 text-[#26a69a] rounded text-xs font-medium">Active</span>
                     ) : (
                       <span className="px-2 py-1 bg-[#ef5350]/20 text-[#ef5350] rounded text-xs font-medium">Locked</span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    {user.tradeMode === 'PROFIT' ? (
+                      <span className="px-2 py-1 bg-[#26a69a]/20 text-[#26a69a] rounded text-xs font-medium">PROFIT</span>
+                    ) : user.tradeMode === 'LOSS' ? (
+                      <span className="px-2 py-1 bg-[#ef5350]/20 text-[#ef5350] rounded text-xs font-medium">LOSS</span>
+                    ) : (
+                      <span className="px-2 py-1 bg-[#2962ff]/20 text-[#2962ff] rounded text-xs font-medium">NORMAL</span>
                     )}
                   </td>
                   <td className="py-3 px-4 space-x-2 flex">
@@ -254,6 +269,16 @@ export function AdminPage() {
               <p className="text-white font-bold">${(selectedUser.balance || 0).toLocaleString()}</p>
             </div>
           </div>
+          <div className="mt-2">
+            <p className="text-xs text-[#8b949e] uppercase mb-1">Trade Mode</p>
+            {selectedUser.tradeMode === 'PROFIT' ? (
+              <span className="px-2 py-1 bg-[#26a69a]/20 text-[#26a69a] rounded text-xs font-medium">PROFIT</span>
+            ) : selectedUser.tradeMode === 'LOSS' ? (
+              <span className="px-2 py-1 bg-[#ef5350]/20 text-[#ef5350] rounded text-xs font-medium">LOSS</span>
+            ) : (
+              <span className="px-2 py-1 bg-[#2962ff]/20 text-[#2962ff] rounded text-xs font-medium">NORMAL</span>
+            )}
+          </div>
           <div>
             <p className="text-xs text-[#8b949e] uppercase mb-2">Locked Pages</p>
             <div className="flex flex-wrap gap-2">
@@ -287,7 +312,7 @@ export function AdminPage() {
                 {(['NORMAL', 'PROFIT', 'LOSS'] as const).map((mode) => (
                   <button
                     key={mode}
-                    onClick={() => setUserTradeMode(selectedUser.id, mode)}
+                    onClick={() => handleSetTradeMode(selectedUser.id, mode)}
                     className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center ${
                       (selectedUser.tradeMode || 'NORMAL') === mode
                         ? 'bg-[#2962ff]/10 border-[#2962ff] text-white'
